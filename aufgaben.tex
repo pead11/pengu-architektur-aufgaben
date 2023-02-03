@@ -1,0 +1,83 @@
+\documentclass{article}
+
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[ngerman]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{float}
+
+\title{ERA Übungsaufgaben W22/23}
+
+\begin{document}
+\maketitle
+
+\section{Einführung}
+Dieses Aufgabenblatt wurde von Studenten erstellt, um zusätzliche Aufgaben für die Klausurvorbereitung bereitzustellen. Somit kann nicht für die Relevanz der Aufgaben im Bezug auf die Klausur bzw. für korrekte Lösungsvorschläge garantiert werden.
+
+\section{Aufgaben}
+Unter der Führung der Eisbären haben die Pinguine begonnen, ihre eigene \textbf{Hyper-Optimized-[Multi-Cycle-]Pengu-CPU} zu entwickeln. Hierbei scheinen aber noch einige Fragen ungeklärt und besonders bei der Entwicklung scheinen gewisse Fehler nicht zu verhindern zu sein, helf doch den armen Pinguinen dabei ihre exzellente CPU zu entwickeln.
+
+%\subsection{HOPCPU - Falsch verlötet}
+%Als die Pinguine gerade begonnen haben, ihre \textbf{HOPCPU} zu entwickeln ist ein Lötfehler aufgetreten. Da das Forschungsgeld, das den Pinguinen bereitgestellt wurde, knapp wird, muss das Modell dennoch so verkauft werden (\textbf{Oh Nein!}). Teile den Pinguinen also mit, wo genau sich der Fehler befindet und welche der folgenden Befehle man noch ohne Probleme ausführen kann. Begründe ebenfalls kurz, falls Befehle nur \textbf{teilweise} funktionieren, warum dies der Fall ist (\hyperref[sec:lsg01]{Lösungsvorschlag}).
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics{tampered_single_cycle.png}
+%\caption{Falsch verlöteter Schaltkreis}
+%\end{figure}
+
+%Befehle: add, beq, subi, sw, lw, j.
+
+\subsection{HOMCPCPU - Stress Um's Steuerwerk}
+Die Pinguine haben nun begonnen, einen multi-cycle Prozessor zu bauen. Dazu benötigt man ein Steuerwerk, das wie ein endlicher Automat funktioniert. Dieser könnte zum Beispiel als fest verdrahtete Schaltung implementiert werden. Das war den exzellenten Pingus aber zu schwierig anpassbar, also suchen sie nach einer anderen Möglichkeit ihr Steuerwerk umzusetzen. Zeige eine andere Möglichkeit auf, den endlichen Automaten zu realisieren (\hyperref[sec:lsg02]{Lösungsvorschlag}).
+
+\newpage
+
+\subsection{Triviale Berechnungen}
+Die Pinguine wurden beauftragt, triviale Berechnungen anzustellen, doch der Pinguprogrammierer war leicht verwirrt und hat ein sehr aufwendiges Programm geschrieben. Durch inzwischen stark gekürzte Forschungsgelder können die Pinguine es sich aber nicht erlauben das Programm einfach auszuführen, um zu bestimmen, ob es terminiert oder nicht. Hilf ihnen und bestimme ob das folgende Programm terminiert und wenn ja, was am ende im register \texttt{bl} steht (\hyperref[sec:lsg03]{Lösungsvorschlag}). \\ \newline
+\textbf{Hinweis: } Die \texttt{rcr} Instruktion rotiert das gegebene Register um \texttt{n} bit \textbf{über die Carry-Flag}. Es rotiert also \texttt{CF} in das most significant bit des Registers und das least significant bit in \texttt{CF}.
+
+\begin{verbatim}
+trivial_bitrotation:
+    xor eax, eax
+    xor ebx, ebx
+    mov al, 0x0f
+    cmp al, 0x80
+    jo trivial
+    mov bl, 101010b
+    jmp end
+trivial:
+    rcr bl, 8
+    jnc end
+    mov bl, 101010b
+end:
+    cmp bl, 0
+    js secret
+    jnz trivial
+secret:
+    ret
+\end{verbatim}
+
+\newpage
+
+\section{Lösungsvorschläge}
+%\subsection{HOPCPU - Falsch verlötet (Lösungsvorschlag)}
+%\label{sec:lsg01}
+%Das \textbf{Zero} Bit wird nicht mehr durch die Berechnung der ALU sondern abhängig von dem \textbf{ALUSrc} Bit gesetzt. Hierdurch betrifft der Fehler nur Befehle des B-Typs, da alle anderen Befehle unabhängig vom \textbf{Zero} Bit funktionieren. \\
+%Der Befehl, der \textbf{teilweise} funktioniert ist \textbf{beq}. Hierbei gilt: Dieser funktioniert genau für den Fall, in dem die Bedingung \textbf{nicht} erfüllt wurde, da das \textbf{Zero} Bit bei B-Typ Befehlen immer $0$ ist.
+
+\subsection{HOMCPCPU - Stress Um's Steuerwerk (Lösungsvorschlag)}
+\label{sec:lsg02}
+Es könnte ein \textbf{mikroprogrammiertes Steuerwerk} genutzt werden. Hierbei wird die Übergangsfunktion des Automaten durch einen Speicher realisiert. Die Adresse bildet sich aus $n$ Bit für den Zustand und $i$ Bit für den Input und bildet auf eine Speicherzelle mit $n$ Bit für den Folgezustand und $j$ Bit für den Output ab. Diese Methode benötigt also $2^{(n + i)} \cdot (n + j)$ Bit Speicher, um alle möglichen Zustandsübergänge zu kodieren. Diese Methode ist sehr leicht anpassbar und erweiterbar.
+
+\subsection{Triviale Berechnungen (Lösungsvorschlag)}
+\label{sec:lsg03}
+Das Programm terminiert und am Ende steht \texttt{-128} in dem Register \texttt{bl}, sollte das Ergebnis falsch sein, stehen hier zwei wichtige Dinge, die es zu beachten gilt, ansonsten einfach das Programm in SASM kopieren und debuggen, das macht vieles verständlicher.
+
+\begin{itemize}
+    \item Die Carry Flag betrachtet immer vorzeichenlose Zahlen
+    \item Die Overflow Flag betrachtet immer vorzeichenbehaftete Zahlen
+\end{itemize}
+
+\end{document}
+
