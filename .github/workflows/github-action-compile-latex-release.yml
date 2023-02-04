@@ -1,5 +1,5 @@
-name: Build LaTeX document added with PR
-on: pull_request
+name: Build release PDF folder
+on: push
 jobs:
   build_latex:
     runs-on: ubuntu-latest
@@ -10,10 +10,9 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           root_file: "*.tex"
-          pre_compile: "tlmgr update --self && tlmgr update --all && tlmgr install hyperref"
+          pre_compile: "rm template.tex; tlmgr update --self && tlmgr update --all && tlmgr install hyperref"
           glob_root_file: true
-      - name: Upload PDF file
-        uses: actions/upload-artifact@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: PDF
-          path: "*.pdf"
+          files: "*.pdf"
