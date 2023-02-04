@@ -1,11 +1,11 @@
 name: Build LaTeX document added with PR
-on: pull_request
+on: [pull_request, workflow_dispatch]
 jobs:
   build_latex:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@
+        uses: actions/checkout@v3
       - name: Remove template.tex
         run: "rm -f template.tex"
       - name: Compile LaTeX document
